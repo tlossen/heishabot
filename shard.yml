@@ -1,0 +1,22 @@
+name: Heishabot
+version: 0.1.0
+
+authors:
+  - Tim Lossen <tim@lossen.de>
+
+# description: |
+#   Short description of Jeisha
+
+dependencies:
+  mqtt:
+    github: spider-gazelle/crystal-mqtt
+
+# development_dependencies:
+#   webmock:
+#     github: manastech/webmock.cr
+
+license: MIT
+
+targets:
+  heishabot:
+    main: src/heishabot.cr
