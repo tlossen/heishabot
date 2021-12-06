@@ -1,8 +1,12 @@
+#!/usr/bin/env ruby
 require 'rubygems'
 require 'mqtt'
 
 MOSQUITTO_HOST = "localhost"
 INFLUX_URL = "http://localhost:8086/write?db=heishamon"
+
+# wait for startup of mosquitto & influxdb
+sleep(45)
 
 # connect to local mosquitto instance
 MQTT::Client.connect(MOSQUITTO_HOST) do |mqtt|
