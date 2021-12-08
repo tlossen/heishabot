@@ -6,13 +6,12 @@ require 'work_queue'
 MOSQUITTO_HOST = "localhost"
 INFLUX_URL = "http://localhost:8086/write?db=heishamon"
 
-# flush output immediately
-STDOUT.sync = true
 def log(message)
   STDOUT.puts "#{Time.now} #{message}"
+  STDOUT.flush
 end
 
-# background job queue with worker pool
+# background job queue with multiple workers
 queue = WorkQueue.new(5, nil)
 
 # keep reconnecting
