@@ -6,6 +6,9 @@ require 'work_queue'
 MOSQUITTO_HOST = "localhost"
 INFLUX_URL = "http://localhost:8086/write?db=heishamon"
 
+# flush output immediately
+$stdout.sync = true
+
 queue = WorkQueue.new(5, nil)
 
 # keep reconnecting
