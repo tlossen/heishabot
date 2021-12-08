@@ -16,7 +16,7 @@ while true do
       puts "#{Time.now} connected to mosquitto on #{MOSQUITTO_HOST}"
 
       # subscribe to all heishamon topics
-      mqtt.get("panasonic_heat_pump/#") do |topic, message|
+      mqtt.get("panasonic_heat_pump/Main/#") do |topic, message|
 
         # store each message in influxdb
         queue.enqueue_b do 
