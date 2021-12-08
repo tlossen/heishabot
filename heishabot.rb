@@ -7,8 +7,12 @@ MOSQUITTO_HOST = "localhost"
 INFLUX_URL = "http://localhost:8086/write?db=heishamon"
 
 # flush output immediately
-$stdout.sync = true
+STDOUT.sync = true
+def log(message)
+  STDOUT.puts "#{Time.now} #{message}"
+end
 
+# background job queue with worker pool
 queue = WorkQueue.new(5, nil)
 
 # keep reconnecting
@@ -16,20 +20,20 @@ while true do
   begin
   # connect to local mosquitto instance
     MQTT::Client.connect(MOSQUITTO_HOST) do |mqtt|
-      puts "#{Time.now} connected to mosquitto on #{MOSQUITTO_HOST}"
+      log "connected to mosquitto on #{MOSQUITTO_HOST}"
 
       # subscribe to all heishamon topics
       mqtt.get("panasonic_heat_pump/main/#") do |topic, message|
 
         # store each message in influxdb
         queue.enqueue_b do 
-          puts "#{Time.now} #{topic}: #{message}"
+          log "#{topic}: #{message}"
           system "curl -XPOST '#{INFLUX_URL}' --data-binary '#{topic} value=#{message}'"
         end
       end
     end
   rescue Errno::ECONNREFUSED
-    puts "connecting to mosquitto on #{MOSQUITTO_HOST} ..."
+    log "connecting to mosquitto on #{MOSQUITTO_HOST} ..."
     sleep(5)
   end
 end
