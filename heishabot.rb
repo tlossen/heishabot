@@ -5,6 +5,7 @@ require 'work_queue'
 
 MOSQUITTO_HOST = "localhost"
 INFLUX_URL = "http://localhost:8086/write?db=heishamon"
+PATTERN = ARGV[0] || "panasonic_heat_pump/main/#"
 
 def log(message)
   STDOUT.puts "#{Time.now} #{message}"
@@ -22,11 +23,12 @@ while true do
       log "connected to mosquitto on #{MOSQUITTO_HOST}"
 
       # subscribe to all heishamon topics
-      mqtt.get("panasonic_heat_pump/main/#") do |topic, message|
+      log "subscribing to #{PATTERN}"
+      mqtt.get(PATTERN) do |topic, message|
 
         # store each message in influxdb
         queue.enqueue_b do 
-          log "#{topic}: #{message}"
+          # log "#{topic}: #{message}"
           system "curl -XPOST '#{INFLUX_URL}' --data-binary '#{topic} value=#{message}'"
         end
       end
